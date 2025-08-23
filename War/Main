@@ -1,0 +1,150 @@
+import java.util.*;
+
+public class Main {
+	
+	static Random rand = new Random();
+	static Deque<Integer> p1 = new Deque<>();
+	static Deque<Integer> p2 = new Deque<>();
+	
+	public static void main(String[] args) {
+		int[] deck = new int[52];
+
+		generateDeck(deck);
+		shuffleDeck(deck);
+		dealCards(deck, p1, p2);
+		
+		Scanner scanner = new Scanner(System.in);
+		while(!p1.isEmpty() && !p2.isEmpty()) {
+			System.out.println("______________________________");
+			System.out.println("\nPress Enter for next turn...");
+			System.out.println("______________________________");
+			scanner.nextLine();
+			compare();
+		}
+		if(p1.isEmpty()) {
+			System.out.println("Player 2 wins!");
+		} else if (p2.isEmpty()) {
+			System.out.println("Player 1 wins!");
+		}
+	}
+	
+	// Generate deck of 52 cars, 4 of each value
+	// Aces = 14, Kings = 13, so on...
+	private static void generateDeck(int[] arr) {
+		for (int i = 0; i < 4; i++) {
+			for (int j = 2; j <= 14; j++) {
+				arr[i * 13 + (j - 2)] = j;
+			}
+		}
+	
+	}
+	
+	// Fisher-Yates Shuffle
+	private static void shuffleDeck(int[] arr) {
+		for(int i = arr.length - 1; i > 0; --i) {
+			int j = rand.nextInt(i + 1);
+			
+			// Swap the cards
+			int temp = arr[i];
+			arr[i] = arr[j];
+			arr[j] = temp;
+		}
+	}
+	
+	// Distribute cards into each players hand
+	private static void dealCards(int[] arr, Deque<Integer> s1, Deque<Integer> s2) {
+		for(int i = 0; i < 52; i++) {
+			if(i % 2 == 1) {
+				s1.addFirst(arr[i]);
+			} else {
+				s2.addFirst(arr[i]);
+			}
+		}
+	}
+	
+	
+	// Determine which player card is higher and give the winner the cards
+	private static void compare() {
+		int c1 = p1.removeFirst();
+		int c2 = p2.removeFirst();
+			
+		List<Integer> pile = new ArrayList<>();
+		pile.add(c1);
+		pile.add(c2);
+		System.out.println("Player 1 card: " + c1);
+		System.out.println("Player 2 card: " + c2);
+			
+		if (c1 < c2) {
+			for (Integer card : pile) {
+				p2.addLast(card);
+			}
+			System.out.println("\nPlayer 2 won!");
+			System.out.println("\nPlayer 1 hand size: " + p1.size());
+			System.out.println("Player 2 hand size: " + p2.size() + "\n");
+		} else if (c1 > c2) {
+			for (Integer card : pile) {
+				p1.addLast(card);
+			}
+			System.out.println("\nPlayer 1 won!");
+			System.out.println("\nPlayer 1 hand size: " + p1.size());
+			System.out.println("Player 2 hand size: " + p2.size() + "\n");
+		} else {
+			System.out.println("\nWAR!\n");
+				
+			resolveWar(pile);
+			
+			}
+
+	}
+	
+	// If players flip the same value card
+	private static void resolveWar(List<Integer> pile) {
+		while (true) {
+			for(int i = 0; i < 3; i++) {
+				if (!p1.isEmpty()) pile.add(p1.removeFirst());
+				if (!p2.isEmpty()) pile.add(p2.removeFirst());
+			}
+			if (p1.isEmpty()) {
+				System.out.println("Player 1 cannot continue. Player 2 wins!");
+				for (Integer card : pile) {
+					p2.addLast(card);
+				}
+			}
+		    if (p2.isEmpty()) {
+		    	System.out.println("Player 2 cannot continue. Player 1 wins!");
+		    	for (Integer card : pile) {
+					p1.addLast(card);
+				}
+		    }
+				
+			int warC1 = p1.removeFirst();
+			int warC2 = p2.removeFirst();
+			pile.add(warC1);
+			pile.add(warC2);
+			
+			System.out.println("Player 1 war card: " + warC1);
+			System.out.println("Player 2 war card: " + warC2);
+				
+			if (warC1 > warC2) {
+				for (Integer card : pile) {
+					p1.addLast(card);
+				}
+				System.out.println("\nPlayer 1 wins the war!");
+				System.out.println("\nPlayer 1 hand size: " + p1.size());
+				System.out.println("Player 2 hand size: " + p2.size() + "\n");
+				return;
+			} else if (warC1 < warC2) {
+				for (Integer card : pile) {
+					p2.addLast(card);
+				}
+				System.out.println("\nPlayer 2 wins the war!");
+				System.out.println("\nPlayer 1 hand size: " + p1.size());
+				System.out.println("Player 2 hand size: " + p2.size() + "\n");
+				return;
+			} else {
+				System.out.println("\nWar Continues");
+			}
+			
+		}
+	}
+}
