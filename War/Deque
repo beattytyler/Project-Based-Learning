@@ -1,0 +1,41 @@
+import java.util.Iterator;
+
+public class Deque <T> implements Iterable <T> {
+
+	private DoublyLinkedList<T> list = new DoublyLinkedList<>();
+
+	@Override
+	public Iterator<T> iterator() {
+		return list.iterator();
+	}
+	
+	@Override
+	public String toString() {
+		return list.toString();
+	}
+	
+	// Add an element to the front of the Deque
+	public void addFirst(T elem) {
+		list.addFirst(elem);
+	}
+	
+	// Add an element to the back of the Deque
+	public void addLast(T elem) {
+		list.addLast(elem);
+	}
+	
+	// Remove an element from the front of the Deque
+	public T removeFirst() {
+		return list.removeFirst();
+	}
+
+	// Check if the Deque is empty
+	public boolean isEmpty() {
+		return list.isEmpty();
+	}
+	
+	// Return the size of the Deque
+	public int size() {
+		return list.size();
+	}
+}
