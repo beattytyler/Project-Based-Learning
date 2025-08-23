@@ -1,0 +1,121 @@
+
+public class DoublyLinkedList <T> implements Iterable <T> {
+	
+	private int size = 0;
+	private Node <T> head = null;
+	private Node <T> tail = null;
+	
+	
+	public class Node <T> {
+		T data;
+		Node <T> prev, next;
+		public Node(T data, Node <T> prev, Node <T> next) {
+			this.data = data;
+			this.prev = prev;
+			this.next = next;
+		}
+		@Override public String toString() {
+			return data.toString();
+		}
+	}
+	
+	
+	// Return the size of this linked list
+	public int size() {
+		return size;
+	}
+	
+	// Is this linked list empty
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+	
+	// Add an element to the tail of the linked list, 0(1)
+	public void add(T elem) {
+		addLast(elem);
+	}
+	
+	// Add an element to the head of the linked list, 0(1)
+	public void addFirst(T elem) {
+		
+		// If the linked list is empty
+		if (isEmpty()) {
+			head = tail = new Node <T> ( elem, null, null);
+		} else {
+			head.prev = new Node <T> ( elem, null, head);
+			head = head.prev;
+		}
+		
+		size++;	
+	}
+	
+	// Add an element to the head of the linked list, 0(1)
+	public void addLast(T elem) {
+		
+		// If the linked list is empty
+		if (isEmpty()) {
+			head = tail = new Node <T> ( elem, null, null);
+		} else {
+			tail.next = new Node<T> (elem, tail, null);
+			tail = tail.next;
+		}
+		
+		size++;
+	}
+	
+	
+	// Remove the first node from the linked list, 0(1)
+	public T removeFirst() {
+		
+		// Can't remove data from an empty list
+		if (isEmpty()) throw new RuntimeException("Empty List");
+		
+		// Extract the data at the head and move
+		// the head pointer forwards one
+		T data = head.data;
+		head = head.next;
+		--size;
+		
+		// If the list is empty set the tail to null as well
+		if(isEmpty()) tail = null;
+		
+		// Do a memory clean of the previous node
+		else head.prev = null;
+		
+		// Return the extracted data
+		return data;
+	}
+	
+	
+	@Override public java.util.Iterator <T> iterator() {
+		return new java.util.Iterator<T> () {
+		private Node <T> trav = head;
+		@Override public boolean hasNext() {
+			return trav != null;
+		}
+		@Override public T next() {
+			T data = trav.data;
+			trav = trav.next;
+			return data;
+			}
+		};
+	}
+	
+	@Override public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		Node <T> trav = head;
+		while (trav != null) {
+			sb.append(trav.data);
+			if (trav.next != null) {
+				sb.append(", ");
+			}
+			trav = trav.next;
+		}
+		sb.append("]");
+		return sb.toString();
+	}
+	
+	
+}
+
